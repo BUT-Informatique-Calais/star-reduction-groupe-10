@@ -28,28 +28,29 @@ if data.ndim == 3:
     
     # Save the data as a png image (no cmap for color images)
     plt.imsave('./results/original.png', data_normalized)
-    
-    # Normalize each channel separately to [0, 255] for OpenCV
-    image = np.zeros_like(data, dtype='uint8')
-    for i in range(data.shape[2]):
-        channel = data[:, :, i]
-        image[:, :, i] = ((channel - channel.min()) / (channel.max() - channel.min()) * 255).astype('uint8')
+        
 else:
     # Monochrome image
     plt.imsave('./results/original.png', data, cmap='gray')
     
-    # Convert to uint8 for OpenCV
-    image = ((data - data.min()) / (data.max() - data.min()) * 255).astype('uint8')
 
-
+# Convert to uint8 for OpenCV
+image = ((data - data.min()) / (data.max() - data.min()) * 255).astype('uint8')
 
 # Define a kernel for erosion
 kernel = np.ones((5,5), np.uint8)
 # Perform erosion
 eroded_image = cv.erode(image, kernel, iterations=1)
 
-# Save the eroded image 
-cv.imwrite('./results/eroded.png', eroded_image)
+# Color image
+if image.ndim == 3 and image.shape[2] == 3:
+    # Convert RGB -> BGR
+    eroded_bgr = cv.cvtColor(eroded_image, cv.COLOR_RGB2BGR)
+    cv.imwrite('./results/eroded.png', eroded_bgr)
+else:
+    # Monochrome image
+    cv.imwrite('./results/eroded.png', eroded_image)
+
 
 # Close the file
 hdul.close()
