@@ -78,7 +78,7 @@ if is_color:
     for c in range(3):
         I_final[:, :, c] = M * I_erode[:, :, c] + (1.0 - M) * data[:, :, c]
 else:
-    I_final = M * I_erode + (1.0 - M) * gray
+    I_final = M * I_erode + (1.0 - M) * I_original
 
 # Normalize final image
 I_final_normalized = ((I_final - I_final.min()) / (I_final.max() - I_final.min()) * 255).astype(np.uint8)
@@ -88,7 +88,7 @@ if is_color:
     plt.imsave('./results/original.png', (data - data.min()) / (data.max() - data.min()))
     plt.imsave('./results/final.png', I_final_normalized)
 else:
-    plt.imsave('./results/original.png', gray, cmap='gray')
+    plt.imsave('./results/original.png', I_original, cmap='gray')
     plt.imsave('./results/final.png', I_final_normalized, cmap='gray')
 
 # Close the file
