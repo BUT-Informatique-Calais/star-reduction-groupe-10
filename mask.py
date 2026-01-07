@@ -20,10 +20,16 @@ data = hdul[0].data
 header = hdul[0].header
 
 # Prepare grayscale image only for star detection
-if data.ndim == 3 and data.shape[0] == 3:
-    data = np.transpose(data, (1, 2, 0))  # (H, W, 3)
+is_color = False
+if data.ndim == 3: 
+    if data.shape[0] == 3:
+        data = np.transpose(data, (1, 2, 0))
+    is_color = True
 
-gray = np.mean(data, axis=2)
+if is_color:
+    gray = np.mean(data, axis=2)
+else:
+    gray = data.copy()
 
 # DAOStarFinder
 mean, median, std = sigma_clipped_stats(gray, sigma=3.0)
@@ -48,7 +54,13 @@ plt.imsave('./results/original.png', gray, cmap='gray')
 # Convert to uint8 for OpenCV
 image = ((data - data.min()) / (data.max() - data.min()) * 255).astype('uint8')
 
-I_erode = median_filter(gray, size=5)
+# Median filter
+if is_color:
+    I_erode = np.zeros_like(data, dtype=np.float32)
+    for c in range(3):
+        I_erode[:, :, c] = median_filter(data[:, :, c], size=5)
+else:
+    I_erode = median_filter(gray, size=5).astype(np.float32)
 
 # Convert mask to float [0,1]
 M = mask.astype(np.float32) / 255.0
@@ -61,13 +73,23 @@ I_original = gray.astype(np.float32)
 I_erode = I_erode.astype(np.float32)
 
 # Interpolation
-I_final = (M * I_erode) + ((1.0 - M) * I_original)
+if is_color:
+    I_final = np.zeros_like(data, dtype=np.float32)
+    for c in range(3):
+        I_final[:, :, c] = M * I_erode[:, :, c] + (1.0 - M) * data[:, :, c]
+else:
+    I_final = M * I_erode + (1.0 - M) * gray
 
 # Normalize final image
 I_final_normalized = ((I_final - I_final.min()) / (I_final.max() - I_final.min()) * 255).astype(np.uint8)
 
-# Save result
-plt.imsave('./results/final.png', I_final_normalized, cmap='gray')
+# Save results
+if is_color:
+    plt.imsave('./results/original.png', (data - data.min()) / (data.max() - data.min()))
+    plt.imsave('./results/final.png', I_final_normalized)
+else:
+    plt.imsave('./results/original.png', gray, cmap='gray')
+    plt.imsave('./results/final.png', I_final_normalized, cmap='gray')
 
 # Close the file
 hdul.close()
