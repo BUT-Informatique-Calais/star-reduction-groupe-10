@@ -1,4 +1,5 @@
 ﻿from PyQt6.QtWidgets import QFileDialog
+import cv2 as cv
 
 class ImageController:
     def __init__(self, model, view):
@@ -29,7 +30,8 @@ class ImageController:
             None, "Save image", "", "PNG Files (*.png)"
         )
         if file_path:
-            import cv2 as cv
+            if not file_path.lower().endswith(".png"):
+                file_path += ".png"
             cv.imwrite(file_path, self.model.I_final_normalized)
 
     def update_result(self):
@@ -44,3 +46,4 @@ class ImageController:
         # Recompute star reduction
         result = self.model.apply_star_reduction()
         self.view.update_image(self.view.label_result, result)
+
