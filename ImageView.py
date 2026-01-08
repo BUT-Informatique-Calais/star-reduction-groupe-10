@@ -15,21 +15,21 @@ class ImageView(QWidget):
         self.save_button = QPushButton("Exporter l'image")
 
         # Star radius slider
-        self.erode_slider = QSlider(Qt.Orientation.Horizontal)
-        self.erode_slider.setMinimum(3)
-        self.erode_slider.setMaximum(20)
-        self.erode_slider.setValue(10)
-        self.erode_slider.setTickInterval(1)
-        self.erode_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
+        self.star_radius = QSlider(Qt.Orientation.Horizontal)
+        self.star_radius.setMinimum(3)
+        self.star_radius.setMaximum(20)
+        self.star_radius.setValue(10)
+        self.star_radius.setTickInterval(1)
+        self.star_radius.setTickPosition(QSlider.TickPosition.TicksBelow)
 
         # Median filter size slider
-        self.iter_slider = QSlider(Qt.Orientation.Horizontal)
-        self.iter_slider.setMinimum(3)
-        self.iter_slider.setMaximum(15)
-        self.iter_slider.setValue(5)
-        self.iter_slider.setSingleStep(2)
-        self.iter_slider.setTickInterval(2)
-        self.iter_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
+        self.median_filter = QSlider(Qt.Orientation.Horizontal)
+        self.median_filter.setMinimum(3)
+        self.median_filter.setMaximum(15)
+        self.median_filter.setValue(5)
+        self.median_filter.setSingleStep(2)
+        self.median_filter.setTickInterval(2)
+        self.median_filter.setTickPosition(QSlider.TickPosition.TicksBelow)
 
         # Image display labels
         self.label_orig = QLabel("Image originale")
@@ -50,9 +50,9 @@ class ImageView(QWidget):
         layout.addWidget(self.label_orig, 1, 0)
         layout.addWidget(self.label_result, 1, 1)
         layout.addWidget(QLabel("Rayon des étoiles"), 2, 0)
-        layout.addWidget(self.erode_slider, 3, 0)
+        layout.addWidget(self.star_radius, 3, 0)
         layout.addWidget(QLabel("Filtre médian"), 2, 1)
-        layout.addWidget(self.iter_slider, 3, 1)
+        layout.addWidget(self.median_filter, 3, 1)
 
         self.setLayout(layout)
 

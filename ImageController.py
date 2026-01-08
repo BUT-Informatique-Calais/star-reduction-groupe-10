@@ -8,8 +8,8 @@ class ImageController:
         # Connect UI events to controller methods
         self.view.load_button.clicked.connect(self.load_image)
         self.view.save_button.clicked.connect(self.save_image)
-        self.view.iter_slider.valueChanged.connect(self.update_result)
-        self.view.erode_slider.valueChanged.connect(self.update_result)
+        self.view.median_filter.sliderReleased.connect(self.update_result)
+        self.view.star_radius.sliderReleased.connect(self.update_result)
 
     def load_image(self):
         """Open a file dialog and load a FITS image"""
@@ -38,8 +38,8 @@ class ImageController:
             return
 
         # Update model parameters from sliders
-        self.model.mask_radius = self.view.erode_slider.value()
-        self.model.median_size = self.view.iter_slider.value()
+        self.model.mask_radius = self.view.star_radius.value()
+        self.model.median_size = self.view.median_filter.value()
 
         # Recompute star reduction
         result = self.model.apply_star_reduction()

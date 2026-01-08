@@ -16,6 +16,8 @@ class ImageModel:
 
         self.is_color: bool = False
 
+        self.stars = None
+
         # Processing parameters
         self.mask_radius: int = 10
         self.median_size: int = 5
@@ -70,19 +72,20 @@ class ImageModel:
         if self.median_size % 2 == 0:
             self.median_size += 1
 
-        # DAOStarFinder
-        mean, median, std = sigma_clipped_stats(self.gray, sigma=3.0)
-        
-        # Detect stars
-        daofind = DAOStarFinder(fwhm=3.0, threshold=5.0 * std)
-        sources = daofind(self.gray - median)
+        if self.stars is None:
+            # DAOStarFinder
+            mean, median, std = sigma_clipped_stats(self.gray, sigma=3.0)
+            
+            # Detect stars
+            daofind = DAOStarFinder(fwhm=3.0, threshold=5.0 * std)
+            self.stars = daofind(self.gray - median)
 
         # Create empty mask
         mask = np.zeros_like(self.gray, dtype=np.uint8)
         
         # Fill stars in the mask
-        if sources is not None:
-            for star in sources:
+        if self.stars is not None:
+            for star in self.stars:
                 x, y = int(star['xcentroid']), int(star['ycentroid'])
                 cv.circle(mask, (x, y), self.mask_radius, color=255, thickness=-1)
 
