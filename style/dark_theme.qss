@@ -1,0 +1,19 @@
+QWidget {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    font-size: 14px;
+}
+QPushButton {
+    background-color: #444444;
+    border: 1px solid #aaaaaa;
+    padding: 5px;
+    border-radius: 5px;
+}
+QSlider::handle:horizontal {
+    background-color: #bbbbbb;
+    width: 15px;
+}
+QLabel {
+    border: 1px solid #555555;
+    background-color: #3e3e3e;
+}
