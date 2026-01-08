@@ -8,6 +8,7 @@ class ImageView(QWidget):
         
         # Main window configuration
         self.setWindowTitle("Star Reduction")
+        self.setWindowIcon(QIcon("img/star_reduction.png"))
         self.setGeometry(100, 100, 1200, 800)
         self.setContentsMargins(15, 15, 15, 15)
 
