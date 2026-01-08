@@ -1,8 +1,8 @@
 ﻿import sys
 from PyQt6.QtWidgets import QApplication
-from prototype.ImageModel import ImageModel
-from prototype.ImageView import ImageView
-from prototype.ImageController import ImageController
+from ImageModel import ImageModel
+from ImageView import ImageView
+from ImageController import ImageController
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
