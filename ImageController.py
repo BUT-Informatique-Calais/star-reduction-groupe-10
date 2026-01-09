@@ -9,6 +9,7 @@ class ImageController:
         # Connect UI events to controller methods
         self.view.load_button.clicked.connect(self.load_image)
         self.view.save_button.clicked.connect(self.save_image)
+        self.view.api_button.clicked.connect(self.api)
         self.view.median_filter.sliderReleased.connect(self.update_result)
         self.view.star_radius.sliderReleased.connect(self.update_result)
 
@@ -33,6 +34,23 @@ class ImageController:
             if not file_path.lower().endswith(".png"):
                 file_path += ".png"
             cv.imwrite(file_path, self.model.I_final_normalized)
+            
+    def api(self):
+        """Use API to load a FITS image and update the UI with the result"""
+        file_path, _ = QFileDialog.getOpenFileName(
+            None, "Choose a FITS file", "", "FITS Files (*.fits)"
+        )
+        if file_path:
+            # Upload the image to the API
+            self.model.load_fits(file_path)
+
+            # Load the FITS file and update the UI
+            self.view.update_image(self.view.label_orig, self.model.image_orig)
+            
+            # Recompute star reduction
+            result = self.model.apply_star_reduction_api(file_path)
+            self.view.update_image(self.view.label_result, result)
+            
 
     def update_result(self):
         """Update the result image when parameters change"""
