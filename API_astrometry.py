@@ -7,7 +7,7 @@ from astropy.io import fits
 import io
 import cv2
 
-def upload_image_API(image : str) -> None:
+def upload_image_API(image : str) -> np.ndarray:
     api_url : str = ""
     R : requests = None
     session_id : str = ""
@@ -66,8 +66,7 @@ def upload_image_API(image : str) -> None:
             status = job_status.get('status')
             if status == "success":
                 print(f"Success ! Generation of the mask for the Job {job_id}.")
-                make_mask(job_id)
-                break
+                return make_mask(job_id)
             
             elif status == "failure":
                 print("Astrometry failed on this image.")
@@ -81,7 +80,7 @@ def upload_image_API(image : str) -> None:
 
 
 
-def make_mask(job_id : int)-> None:     
+def make_mask(job_id : int)-> np.ndarray:     
     r : requests = None
     width : int = 0
     height : int = 0
@@ -90,7 +89,7 @@ def make_mask(job_id : int)-> None:
     mask : np.ndarray = None
     x : int = 0
     y : int = 0
-    radius : int = 3
+    radius : int = 20
     color : int = 255
     thickness : int = -1
        
@@ -121,11 +120,9 @@ def make_mask(job_id : int)-> None:
         mask = np.zeros((height, width), dtype=np.uint8)
         for x, y in zip(x_coords, y_coords):
             cv2.circle(mask, (int(x), int(y)), radius, color, thickness)
-            
-        cv2.imwrite("masque_API.png", mask)
+        
+        return mask
 
     except Exception as e:
         print(f"Error while reading the FITS : {e}")
         return None
-    
-upload_image_API("./examples/test_M31_linear.fits")

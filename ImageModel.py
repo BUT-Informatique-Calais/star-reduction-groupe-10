@@ -5,6 +5,7 @@ from typing import Optional
 from photutils.detection import DAOStarFinder
 from astropy.stats import sigma_clipped_stats
 from scipy.ndimage import median_filter
+from API_astrometry import upload_image_API
 
 
 class ImageModel:
@@ -89,6 +90,49 @@ class ImageModel:
                 x, y = int(star['xcentroid']), int(star['ycentroid'])
                 cv.circle(mask, (x, y), self.mask_radius, color=255, thickness=-1)
 
+        # Median filter
+        if self.is_color:
+            I_erode = np.zeros_like(self.data, dtype=np.float32)
+            for c in range(3):
+                I_erode[:, :, c] = median_filter(self.data[:, :, c], size=self.median_size)
+        else:
+            I_erode = median_filter(self.gray, size=self.median_size).astype(np.float32)
+
+        # Convert mask to float [0,1]
+        M = mask.astype(np.float32) / 255.0
+
+        # Gaussian blur to soften edges
+        M = cv.GaussianBlur(M, (self.gaussian_kernel, self.gaussian_kernel), sigmaX=3)
+
+        # Convert original and eroded images to float
+        I_original = self.gray.astype(np.float32)
+        I_erode = I_erode.astype(np.float32)
+
+        # Interpolation
+        if self.is_color:
+            I_final = np.zeros_like(self.data, dtype=np.float32)
+            for c in range(3):
+                I_final[:, :, c] = (
+                    M * I_erode[:, :, c] + (1.0 - M) * self.data[:, :, c]
+                )
+        else:
+            I_final = M * I_erode + (1.0 - M) * I_original
+
+        # Convert RGB -> BGR
+        I_final = cv.cvtColor(I_final, cv.COLOR_RGB2BGR)
+    
+        # Normalize final image
+        self.I_final_normalized = self._normalize(I_final)
+
+        return self.I_final_normalized
+
+    def apply_star_reduction_api(self, file_path: str) -> np.ndarray:
+        """Apply star reduction using API"""
+        mask = upload_image_API(file_path)
+        
+        if mask is None:
+            return self.image_orig
+        
         # Median filter
         if self.is_color:
             I_erode = np.zeros_like(self.data, dtype=np.float32)
