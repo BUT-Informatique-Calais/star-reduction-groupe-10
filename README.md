@@ -26,25 +26,25 @@ L’application permet :
 
 Le projet suit une architecture **MVC (Modèle – Vue – Contrôleur)** :
 
-* **Model (********`ImageModel`************************************************************************************************************************************************************************************************)**
+* **Model (`ImageModel`)
 
   * Chargement des fichiers FITS
   * Prétraitement des données
   * Détection des étoiles
   * Algorithme de réduction d’étoiles
 
-* **View (********`ImageView`************************************************************************************************************************************************************************************************)**
+* **View (`ImageView`)
 
   * Interface graphique PyQt6
   * Affichage des images
   * Sliders et boutons
 
-* **Controller (********`ImageController`************************************************************************************************************************************************************************************************)**
+* **Controller (`ImageController`)
 
   * Gestion des événements utilisateur
   * Lien entre la vue et le modèle
 
-* **Optimisation (********`StarReductionThread`************************************************************************************************************************************************************************************************)**
+* **Optimisation (`StarReductionThread`)
 
   * Thread séparé pour les calculs lourds afin d’éviter le gel de l’interface
 
@@ -137,4 +137,4 @@ Résultat :
 
 ---
 
-##
+
