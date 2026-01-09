@@ -1,4 +1,5 @@
 ﻿from PyQt6.QtWidgets import QFileDialog
+from StarReductionThread import StarReductionThread
 import cv2 as cv
 
 class ImageController:
@@ -43,7 +44,17 @@ class ImageController:
         self.model.mask_radius = self.view.star_radius.value()
         self.model.median_size = self.view.median_filter.value()
 
-        # Recompute star reduction
-        result = self.model.apply_star_reduction()
+        # Disable sliders
+        self.view.star_radius.setEnabled(False)
+        self.view.median_filter.setEnabled(False)
+        
+        # Create and start thread
+        self.thread = StarReductionThread(self.model)
+        self.thread.finished.connect(self.on_thread_finished)
+        self.thread.start()
+        
+    def on_thread_finished(self, result):
         self.view.update_image(self.view.label_result, result)
-
+        # Enable sliders
+        self.view.star_radius.setEnabled(True)
+        self.view.median_filter.setEnabled(True)
