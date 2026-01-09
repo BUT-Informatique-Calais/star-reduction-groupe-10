@@ -25,12 +25,12 @@ class ImageView(QWidget):
         self.file_menu.addAction(self.save_button.text(), self.save_button.click)
         self.file_menu_button.setMenu(self.file_menu)
         self.file_menu_button.setStyleSheet("padding:10px; margin:5px;")
-        
+
         # API button
         self.api_button = QPushButton()
         self.api_button.setText("Utiliser l'API Astrometry.net")
         self.api_button.setStyleSheet("margin:5px; padding:4px;")
-
+        
         # Theme button (light/dark)
         self.theme_button = QPushButton()
         self.theme_button.setIcon(QIcon("img/sun.png"))
