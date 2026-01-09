@@ -38,6 +38,7 @@ class ImageController:
             cv.imwrite(file_path, self.model.I_final_normalized)
 
     def api(self):
+        """Open a file dialog, load a FITS image and use API for star reduction"""
         file_path, _ = QFileDialog.getOpenFileName(
             None, "Choose a FITS file", "", "FITS Files (*.fits)"
         )
@@ -76,6 +77,7 @@ class ImageController:
         self.thread.start()
         
     def on_thread_finished(self, result):
+        """Update the result image when the thread is finished"""
         self.view.update_image(self.view.label_result, result)
         # Enable sliders
         self.view.star_radius.setEnabled(True)

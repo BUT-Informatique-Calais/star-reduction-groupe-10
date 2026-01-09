@@ -8,6 +8,7 @@ import io
 import cv2
 
 def upload_image_API(image : str) -> np.ndarray:
+    """Uploads an image to the API and returns the job ID"""
     api_url : str = ""
     R : requests = None
     session_id : str = ""
@@ -24,7 +25,6 @@ def upload_image_API(image : str) -> np.ndarray:
 
     # Login
     R = requests.post(f"{api_url}login", data={'request-json': json.dumps({"apikey": "axcybncczwmrpsij"})})
-    # print("Login : ", R.text)
 
     session_id = R.json()
     session_id = session_id.get("session")
@@ -43,7 +43,6 @@ def upload_image_API(image : str) -> np.ndarray:
 
     # Upload the image to the API
     upload = requests.post(f"{api_url}upload", files={'file': file_args}, data={'request-json': json.dumps({"session": session_id})})
-    # print("Upload : ", upload.text)
 
     upload_json = upload.json()
     subid = upload_json.get('subid')
@@ -80,7 +79,8 @@ def upload_image_API(image : str) -> np.ndarray:
 
 
 
-def make_mask(job_id : int)-> np.ndarray:     
+def make_mask(job_id : int)-> np.ndarray:
+    """Creates a mask from the coordinates of the detected stars"""  
     r : requests = None
     width : int = 0
     height : int = 0

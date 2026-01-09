@@ -126,6 +126,7 @@ class ImageView(QWidget):
         self.set_dark_theme()
 
     def toggle_theme(self):
+        """Toggle between light and dark theme"""
         if self.dark_mode:
             self.set_light_theme()
             self.dark_mode = False
